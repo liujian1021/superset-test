@@ -2,8 +2,7 @@ FROM apache/superset:latest
 
 # 先用 root 做需要的系统级操作
 USER root
-RUN mkdir -p /app/pythonpath && \
-    pip install --no-cache-dir --target /app/pythonpath \
+RUN pip install --no-cache-dir && \
     "psycopg2-binary>=2.9,<3" \
     "sqlalchemy-bigquery>=1.11" \
     pandas-gbq
