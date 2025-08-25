@@ -2,22 +2,15 @@ FROM apache/superset:latest
 
 # 先用 root 做需要的系统级操作
 USER root
-RUN pip install --no-cache-dir && \
-    "psycopg2-binary>=2.9,<3" \
-    "sqlalchemy-bigquery>=1.11" \
-    pandas-gbq
 
-# 构建期自检（日志里应看到 OK）
-RUN python - <<'PY'
-import importlib, sys
-print("Python:", sys.executable)
-for m in ("sqlalchemy.dialects.postgresql", "psycopg2", "sqlalchemy.dialects.bigquery"):
-    try:
-        importlib.import_module(m)
-        print(m, "OK")
-    except Exception as e:
-        print(m, "FAIL ->", e)
-PY
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+      psycopg2-binary \
+      "pybigquery>=0.5.0" \
+      "google-cloud-bigquery>=3.0,<4.0" \
+      google-auth \
+      db-dtypes \
+      pandas-gbq
 
 # 确保 /app 目录存在
 RUN mkdir -p /app
