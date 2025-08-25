@@ -3,13 +3,29 @@ FROM apache/superset:latest
 # 先用 root 做需要的系统级操作
 USER root
 
-RUN pip install --no-cache-dir --upgrade pip && \
+# （可选）若之前装过 pybigquery，先卸掉，避免方言名字冲突
+RUN pip uninstall -y pybigquery || true
+
+# 升级基础工具，再安装 BigQuery 驱动
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir \
       psycopg2-binary \
-      sqlalchemy-bigquery \
+      "sqlalchemy-bigquery" \
       google-auth \
       db-dtypes \
       pandas-gbq
+
+# 可选：构建日志里打印确认一下
+RUN python - <<'PY'
+import pkgutil, sys
+print("has sqlalchemy_bigquery:", pkgutil.find_loader("sqlalchemy_bigquery") is not None)
+print("dialect load test:", end=" ")
+try:
+    __import__("sqlalchemy.dialects.bigquery")
+    print("OK")
+except Exception as e:
+    print("FAIL", e, file=sys.stderr)
+PY
 
 # 确保 /app 目录存在
 RUN mkdir -p /app
