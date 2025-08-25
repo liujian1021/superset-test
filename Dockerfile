@@ -1,16 +1,28 @@
 FROM apache/superset:latest
 
-# 如需外部数据库，保留这行；只用自带 SQLite 也没问题
+# 先用 root 做需要的系统级操作
 USER root
-RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir psycopg2-binary
 
-# 保存元数据与“已初始化”标记的目录
+# 可选：装驱动/库（比如需要连 PostgreSQL）
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir psycopg2-binary
+
+# 确保 /app 目录存在
+RUN mkdir -p /app
+
+# 复制启动脚本到 /app，并直接赋权；同时把换行符转换为 LF（防止 CRLF 问题）
+COPY docker-bootstrap.sh /app/docker-bootstrap.sh
+RUN dos2unix /app/docker-bootstrap.sh || true && \
+    chmod +x /app/docker-bootstrap.sh
+
+# 准备 Superset 数据目录
 RUN mkdir -p /var/lib/superset && chown -R superset:superset /var/lib/superset
 ENV SUPERSET_HOME=/var/lib/superset
 
-USER superset
-COPY docker-bootstrap.sh /app/docker-bootstrap.sh
-RUN chmod +x /app/docker-bootstrap.sh
-
 EXPOSE 8088
+
+# 切回非特权用户
+USER superset
+
+# 用脚本启动
 CMD ["/app/docker-bootstrap.sh"]
