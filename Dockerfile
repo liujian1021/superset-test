@@ -3,11 +3,7 @@ FROM apache/superset:latest
 # 先用 root 做需要的系统级操作
 USER root
 
-# （可选）若之前装过 pybigquery，先卸掉，避免方言名字冲突
-RUN pip uninstall -y pybigquery || true
-
-# 升级基础工具，再安装 BigQuery 驱动
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir \
       psycopg2 \
       "sqlalchemy-bigquery" \
