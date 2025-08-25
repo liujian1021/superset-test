@@ -9,7 +9,7 @@ RUN pip uninstall -y pybigquery || true
 # 升级基础工具，再安装 BigQuery 驱动
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir \
-      psycopg2-binary \
+      psycopg2 \
       "sqlalchemy-bigquery" \
       google-auth \
       db-dtypes \
