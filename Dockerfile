@@ -3,11 +3,11 @@ FROM apache/superset:latest
 # 先用 root 做需要的系统级操作
 USER root
 
-# 保持在 USER root 阶段
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir \
+      psycopg2-binary \
       pybigquery==0.10.4 \
-      google-cloud-bigquery==3.* \
+      "google-cloud-bigquery>=3.0,<4.0" \
       google-auth \
       db-dtypes \
       pandas-gbq
