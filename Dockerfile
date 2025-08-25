@@ -4,7 +4,7 @@ FROM apache/superset:latest
 USER root
 
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir \
+    /app/.venv/bin/python -m pip install --no-cache-dir \
       psycopg2-binary \
       "sqlalchemy-bigquery" \
       google-auth \
