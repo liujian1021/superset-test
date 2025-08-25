@@ -6,8 +6,7 @@ USER root
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir \
       psycopg2-binary \
-      "pybigquery>=0.5.0" \
-      "google-cloud-bigquery>=3.0,<4.0" \
+      sqlalchemy-bigquery \
       google-auth \
       db-dtypes \
       pandas-gbq
