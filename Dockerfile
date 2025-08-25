@@ -5,7 +5,7 @@ USER root
 
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir \
-      psycopg2 \
+      psycopg2-binary \
       "sqlalchemy-bigquery" \
       google-auth \
       db-dtypes \
