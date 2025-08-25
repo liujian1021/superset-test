@@ -2,11 +2,10 @@ FROM apache/superset:latest
 
 # 先用 root 做需要的系统级操作
 USER root
-
-RUN pip install --no-cache-dir --upgrade pip && \
-    /app/.venv/bin/python -m pip install --no-cache-dir \
-      psycopg2-binary \
+RUN /app/.venv/bin/python -m pip install --no-cache-dir \
+        psycopg2-binary \
       "sqlalchemy-bigquery" \
+RUN pip install --no-cache-dir --upgrade pip && \
       google-auth \
       db-dtypes \
       pandas-gbq
