@@ -1,1 +1,19 @@
+version: '3.7'
+services:
+  superset:
+    build: ./superset
+    container_name: superset
+    ports:
+      - "8088:8088"
+    environment:
+      - SUPERSET_SECRET_KEY=your_secret_key
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=admin
+      - ADMIN_EMAIL=admin@superset.com
+    command: >
+      /bin/sh -c "
+        superset db upgrade &&
+        superset fab create-admin --username $ADMIN_USERNAME --firstname Superset --lastname Admin --email $ADMIN_EMAIL --password $ADMIN_PASSWORD &&
+        superset init &&
+        superset run -h 0.0.0.0 -p 8088"
 
