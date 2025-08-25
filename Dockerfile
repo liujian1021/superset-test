@@ -2,24 +2,21 @@ FROM apache/superset:latest
 
 # 先用 root 做需要的系统级操作
 USER root
-RUN /app/.venv/bin/python -m pip install --no-cache-dir \
-        psycopg2-binary \
-      "sqlalchemy-bigquery" \
-RUN pip install --no-cache-dir --upgrade pip && \
-      google-auth \
-      db-dtypes \
-      pandas-gbq
+RUN pip install --no-cache-dir \
+    "psycopg2-binary>=2.9,<3" \
+    "sqlalchemy-bigquery>=1.11" \
+    pandas-gbq
 
-# 可选：构建日志里打印确认一下
+# 构建期自检（日志里应看到 OK）
 RUN python - <<'PY'
-import pkgutil, sys
-print("has sqlalchemy_bigquery:", pkgutil.find_loader("sqlalchemy_bigquery") is not None)
-print("dialect load test:", end=" ")
-try:
-    __import__("sqlalchemy.dialects.bigquery")
-    print("OK")
-except Exception as e:
-    print("FAIL", e, file=sys.stderr)
+import importlib, sys
+print("Python:", sys.executable)
+for m in ("sqlalchemy.dialects.postgresql", "psycopg2", "sqlalchemy.dialects.bigquery"):
+    try:
+        importlib.import_module(m)
+        print(m, "OK")
+    except Exception as e:
+        print(m, "FAIL ->", e)
 PY
 
 # 确保 /app 目录存在
