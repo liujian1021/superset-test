@@ -5,7 +5,13 @@ USER root
 
 # 可选：装驱动/库（比如需要连 PostgreSQL）
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir psycopg2-binary
+    pip install --no-cache-dir psycopg2-binary \
+    pip install --no-cache-dir \
+      pybigquery==0.10.4 \
+      google-cloud-bigquery==3.* \
+      google-auth \
+      db-dtypes \
+      pandas-gbq
 
 # 确保 /app 目录存在
 RUN mkdir -p /app
